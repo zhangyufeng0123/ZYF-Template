@@ -36,3 +36,97 @@ int bfs()
 	}
 	return d[ex][ey];
 }
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+//节点的信息
+struct node
+{
+    int x;
+    int y;
+    int z;
+    int num;
+} link[30000];
+//每个节点包括x,y,z坐标
+//num表示开始访问当前节点的时间
+int vis[31][31][31];//标记节点是否入队
+char mapp[31][31][31];//搜索地图
+int pp,qq,t,l,r,c;//当前指针和入队指针,最小时间
+int step[6][3]= {{1,0,0},{-1,0,0},{0,0,1},{0,0,-1},{0,1,0},{0,-1,0}};
+int flag;//标志有没有搜索到目标节点
+bool judge(int x,int y,int z)
+{
+    if(mapp[x][y][z]=='#'||x<0||x>=l||y<0||y>=r||z<0||z>=c)
+        return false;
+    else
+        return true;
+}
+void bfs()
+{
+    while(pp<qq)//队列非空
+    {
+        //访问节点时的操作
+//对节点的访问就是对节点周围节点的搜索
+        for(int i=0; i<6; i++)
+        {
+            int x=link[pp].x+step[i][0];
+            int y=link[pp].y+step[i][1];
+            int z=link[pp].z+step[i][2];
+            if(judge(x,y,z)&&vis[x][y][z]==0)//尚未入队并符合条件
+            {
+                if(mapp[x][y][z]=='.')
+                {
+                    //节点入队
+                    vis[x][y][z]=1;
+                    link[qq].x=x;
+                    link[qq].y=y;
+                    link[qq].z=z;
+                    link[qq].num=link[pp].num+1;//开始访问邻接点的时间相差为1
+                    qq++;
+                }
+                else if(mapp[x][y][z]=='E')//目标节点寻找成功
+                {
+                    flag=1;
+                    t=link[pp].num+1;
+                    break;
+                }
+            }
+        }
+        if(flag)
+            break;
+        pp++;//pp出队，遍历队列中的下一个节点
+    }
+}
+int main()
+{
+    while(cin>>l>>r>>c)
+    {
+        if(l==0&&r==0&&c==0)
+            break;
+        memset(vis,0,sizeof(vis));
+        pp=qq=t=0;
+        link[qq].num=0;
+        for(int i=0; i<l; i++)
+            for(int j=0; j<r; j++)
+                for(int k=0; k<c; k++)
+                {
+                    cin>>mapp[i][j][k];
+                    if(mapp[i][j][k]=='S')//第一个节点入队
+                    {
+                        vis[i][j][k]=1;
+                        link[qq].x=i;
+                        link[qq].y=j;
+                        link[qq].z=k;
+                        qq++;//对头指针+1，节点入队
+                    }
+                }
+        flag=0;
+        bfs();
+        if(flag)
+            cout<<"Escaped in "<<t<<" minute(s)."<<endl;
+        else
+            cout<<"Trapped!"<<endl;
+    }
+    return 0;
+}
