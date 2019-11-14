@@ -1,7 +1,5 @@
 #define myfor(a,b,c) for(int i=a;a<=b?i<=b:i>=b;a<=b?++i:--i)
-
 const int number=3;
-
 int main()
 {
     int sum;//sum是指数
