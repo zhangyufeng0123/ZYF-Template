@@ -1,7 +1,49 @@
-// 此模板中使用到了 point 中的内容
-#include "point.h"
-// 此模板中使用到了 line 中的内容
-#include "line.h"
+struct point
+{
+    double x, y;
+    point();
+    point(double _x, double _y);
+    bool operator<(Point b) const;          // 点左右判断 - line 中使用
+    bool operator==(point b) const;         // 点相等判断
+    point operator+(const point &b) const;  // 向量相加
+    point operator-(const point &b) const;  // 向量相减
+    point operator*(const double &k) const; // 向量乘法
+    point operator/(const double &k) const; // 向量除法
+    point trunc(double r) const;            // 向量模转换
+    double operator*(const point &b) const; // 向量点积
+    double operator^(const Point &b) const; // 向量叉积
+    double len(bool isSqrt = true);         // 向量模长度，参数为是否开平方
+    double distance(const point &other);    // 点距离
+    point rotleft();                        // 向量绕原点逆时针旋转 90 度
+    point rotright();                       // 向量绕原点顺时针旋转 90 度
+    point rotate(point p, double angle);    // 绕 p 点逆时针旋转 angle 度
+    double rad(point a, point b);           // 计算点 this、a、b 组成的角的角度，角的两条射线为 this-a、this-b
+};
+
+struct line
+{
+    point s, e;
+    line();
+    line(point _s, point _e);
+    bool operator==(line v);            // 判断射线重合
+    line(point p, double angle);        // 根据一个点和倾斜角 angle 确定直线,0 <= angle < pi
+    line(double a, double b, double c); // 根据 ax + by + c = 0 确定直线
+    void adjust();                      // 调整线段
+    double lenth();                     // 求线段长度
+    double angle();                     // 返回线段的倾斜角
+    int relation(point p);              // 点和直线关系
+    bool pointonseg(point p);           // 点在线段上的判断
+    bool parallel(line v);              // 两向量平行 (对应直线平行或重合)
+    int segcrossseg(line v);            // 两线段相交判断
+    int linecrossseg(line v);           // 直线和线段相交判断
+    int linecrossline(line v);          // 两直线关系
+    point crosspoint(line v);           // 求两直线的交点
+    double dispointtoline(point p);     // 点到直线的距离
+    double dispointtoseg(point p);      // 点到线段的距离
+    double dissegtoseg(line v);         // 返回线段到线段的距离
+    Point lineprog(Point p);            // 返回点 p 在直线上的投影
+    Point symmetrypoint(Point p);       // 返回点 p 关于直线的对称点
+}
 
 const double eps = 1e-8;
 const double pi = acos(−1.0);
