@@ -1,34 +1,21 @@
-//求解组合数取模p，其中p为质数
-//求解逆元
-ll powMod(ll a, ll b, ll p){
-	ll ret = 1;
-	while(b){
-		if(b & 1){
-			ret = ret * a % mod;
-		}
-		b >>= 1;
-		a = a * a % p;
-	}
-	return ret;
-}
+// 1 <= n, m <= 1000000000, 1 < p < 100000, p is prime
 
-//求组合数，因为分解得较小了，所以可以用暴力
-ll C(ll n, ll m, ll p){
-	if(m > n){
-		return 0;
-	}
-	ll c1 = 1, c2 = 1;
-	for(int i = n + m - 1; i <= n; i++){
-		c1 = c1 * i % p;
-	}
-	for(int i = 2; i <= m; i++){
-		c2 = c2 * i % p;
-	}
-
-	return c1 * powMod(c2, p - 2, p) % p;
+const int maxn = 100010;
+ll f[maxn], inv[maxn];
+void CalFact(){
+	f[0] = 1;
+	for(int i = 1; i < maxn; i++)	f[i] = (f[i - 1] * i) % p;
+		inv[maxn - 1] = Pow(f[maxn - 1], p - 2, p);
+	for(int i = maxn - 2; ~i; i--)	inv[i] = inv[i + 1] * (i + 1) % p;
 }
 
 ll lucas(ll n, ll m, ll p){
-	if(!m)	return 1;
-	return C(n % p, m %p, p) * lucas(n / p, m / p, p) * p;
+	ll ret = 1;
+	while(n && m){
+		ll a = n % p, b = m % p;
+		if(a < b)	return 0;
+		ret = ret *f[a] % p * inv[b] % p * inv[a - b] % p;
+		n /= p, m /= p;
+	}
+	return ret;
 }
